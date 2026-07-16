@@ -1,0 +1,378 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snapchat - Ma Bby</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background:#555;
+    display:flex; justify-content:center; align-items:center; min-height:100vh;
+  }
+  .phone {
+    width:590px; height:1278px;
+    zoom: 0.62;
+    background:#fff;
+    position:relative;
+    display:flex; flex-direction:column;
+    overflow:hidden;
+  }
+  .kb-img { image-rendering:auto; }
+
+  /* ===== STATUS BAR ===== */
+  .status-bar {
+    height:54px;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 30px 0 34px;
+    flex-shrink:0;
+    margin-top:8px;
+  }
+  .status-bar .time { font-size:32px; font-weight:600; color:#000; letter-spacing:0.5px; }
+  .status-bar .right { display:flex; align-items:center; gap:8px; }
+
+  /* ===== HEADER ===== */
+  .header {
+    display:flex; align-items:center;
+    padding:6px 24px 16px;
+    gap:14px;
+    border-bottom:1px solid #ededed;
+    flex-shrink:0;
+  }
+  .back { font-size:44px; color:#000; font-weight:300; line-height:1; margin-top:-4px; }
+  .avatar {
+    width:54px; height:54px; border-radius:50%;
+    background:#dfeefc;
+    display:flex; align-items:flex-end; justify-content:center;
+    overflow:hidden; flex-shrink:0;
+  }
+  .avatar svg { width:40px; height:40px; margin-bottom:-2px; }
+  .hinfo { flex:1; display:flex; flex-direction:column; line-height:1.25; }
+  .hinfo .name { font-size:30px; font-weight:700; color:#000; }
+  .hinfo .sub { font-size:21px; color:#8d8d8d; font-weight:400; }
+  .hactions { display:flex; align-items:center; gap:26px; }
+  .hactions svg { width:40px; height:40px; }
+
+  /* ===== MESSAGE AREA (empty) ===== */
+  .messages { flex:1; background:#fff; }
+
+  /* ===== INPUT BAR ===== */
+  .input-bar {
+    display:flex; align-items:center; gap:14px;
+    padding:12px 20px 16px;
+    flex-shrink:0;
+  }
+  .cam {
+    width:56px; height:56px; border-radius:50%;
+    background:#000;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .cam svg { width:30px; height:30px; }
+  .field {
+    flex:1; height:56px;
+    border:2px solid #e6e6e6; border-radius:30px;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 20px;
+  }
+  .field .ph { font-size:26px; color:#9a9a9a; }
+  .field .wave { display:flex; align-items:center; gap:3px; }
+  .field .wave i { width:3px; background:#9a9a9a; border-radius:2px; display:block; }
+  .input-icons { display:flex; align-items:center; gap:16px; flex-shrink:0; }
+  .input-icons svg { width:42px; height:42px; }
+
+  /* ===== KEYBOARD ===== */
+  .keyboard { background:#d1d5db; padding:8px 0 0; flex-shrink:0; }
+  .predict {
+    display:flex; align-items:center; height:70px;
+    color:#000; font-size:26px;
+  }
+  .predict .p {
+    flex:1; text-align:center; position:relative;
+  }
+  .predict .p:not(:last-child)::after {
+    content:""; position:absolute; right:0; top:50%; transform:translateY(-50%);
+    height:32px; width:1px; background:#aeb3ba;
+  }
+  .krow { display:flex; justify-content:center; gap:8px; padding:0 6px 12px; }
+  .key {
+    background:#fff; border-radius:8px;
+    height:82px; min-width:47px; flex:1;
+    display:flex; align-items:center; justify-content:center;
+    font-size:36px; color:#000; font-weight:400;
+    box-shadow:0 1px 0 rgba(0,0,0,0.28);
+  }
+  .krow.r2 { padding:0 22px 12px; }
+  .key.wide { flex:1.5; background:#adb3bd; }
+  .key.wide svg { width:38px; height:38px; }
+  .krow.r4 .key.num { flex:2.4; font-size:26px; }
+  .key.space { flex:6; background:#fff; }
+  .key.send { flex:2.4; background:#2f80ed; }
+  .key.send svg { width:34px; height:34px; }
+
+  .kbottom { display:flex; align-items:center; justify-content:space-between; padding:6px 30px 14px; }
+  .kbottom svg { width:44px; height:44px; }
+
+  .home-ind { height:8px; width:180px; background:#000; border-radius:5px; margin:0 auto 12px; flex-shrink:0; }
+
+  /* bas d'écran en image (barre + clavier + boutons) */
+  .kb-img { display:block; width:100%; height:auto; flex-shrink:0; }
+
+  /* ===== COMPOSE PREVIEW (style Snap : pas de bulle) ===== */
+  .compose-preview {
+    display:flex; align-items:flex-end; gap:14px;
+    padding:6px 16px 0 0;
+    flex-shrink:0;
+  }
+  .compose-preview .bm { margin-left:-3px; }
+  .compose-preview .bm {
+    width:80px; height:80px; border-radius:50%;
+    background:#eef1f4; overflow:hidden; flex-shrink:0;
+    display:flex; align-items:flex-end; justify-content:center;
+  }
+  .compose-preview .bm svg,
+  .compose-preview .bm img { width:80px; height:80px; object-fit:cover; }
+  .compose-preview .bm img {
+    transform: scale(1.1);
+    transform-origin: 50% 38%;
+    image-rendering:auto;
+  }
+  .bubble-wrap { display:flex; flex-direction:column; flex:1; min-width:0; margin-bottom:2px; }
+  .name-tag {
+    font-size:19px; font-weight:800; color:#F23C57;
+    margin:0 0 2px 2px; letter-spacing:0.4px;
+  }
+  .type-bubble {
+    display:flex; align-items:center; min-width:0;
+  }
+  .type-bubble .txt {
+    font-size:24px; font-weight:600; color:#111; line-height:1.25;
+    letter-spacing:-0.3px; word-break:break-word; white-space:pre-wrap;
+    font-family:-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", "Segoe UI", sans-serif;
+  }
+  .type-bubble .txt .heart { vertical-align:-4px; margin-left:1px; }
+  .caret {
+    display:inline-block; width:2px; height:25px; background:#ff2d2d;
+    margin-left:2px; border-radius:2px; vertical-align:-4px;
+    animation:blink 1.05s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity:0; } }
+</style>
+</head>
+<body>
+  <div class="phone">
+
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+      <span class="time">01:38</span>
+      <div class="right">
+        <!-- signal dots -->
+        <svg width="34" height="24" viewBox="0 0 34 24">
+          <circle cx="5" cy="12" r="3" fill="#000"/>
+          <circle cx="15" cy="12" r="3" fill="#000"/>
+          <circle cx="25" cy="12" r="3" fill="#b9b9b9"/>
+          <rect x="30" y="6" width="4" height="12" rx="1.5" fill="#000"/>
+        </svg>
+        <!-- wifi -->
+        <svg width="34" height="24" viewBox="0 0 34 24" fill="#000">
+          <path d="M17 6c4.6 0 8.8 1.8 12 4.7l-3 3.1A12.9 12.9 0 0 0 17 10.2 12.9 12.9 0 0 0 8 13.8l-3-3.1C8.2 7.8 12.4 6 17 6z"/>
+          <path d="M17 13.2c2.5 0 4.8 1 6.5 2.6l-3 3.1A5 5 0 0 0 17 17.4c-1.4 0-2.6.6-3.5 1.5l-3-3.1a9.2 9.2 0 0 1 6.5-2.6z"/>
+          <circle cx="17" cy="20.5" r="2.6"/>
+        </svg>
+        <!-- battery low yellow -->
+        <svg width="52" height="26" viewBox="0 0 52 26">
+          <rect x="1" y="4" width="42" height="18" rx="5" fill="none" stroke="#000" stroke-opacity="0.35" stroke-width="2"/>
+          <rect x="4" y="7" width="14" height="12" rx="2.5" fill="#f5c518"/>
+          <rect x="45" y="9" width="4" height="8" rx="2" fill="#000" fill-opacity="0.35"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- HEADER -->
+    <div class="header">
+      <span class="back">&#8249;</span>
+      <div class="avatar">
+        <svg viewBox="0 0 40 40" fill="#4aa3f0">
+          <circle cx="20" cy="14" r="9"/>
+          <path d="M4 40c0-9 7.2-15 16-15s16 6 16 15z"/>
+        </svg>
+      </div>
+      <div class="hinfo">
+        <span class="name">Ma Bby</span>
+        <span class="sub">Pau, D&eacute;partement d&hellip; &nbsp;&middot; 5min</span>
+      </div>
+      <div class="hactions">
+        <!-- phone -->
+        <svg viewBox="0 0 24 24" fill="#000"><path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .8-.2 1z"/></svg>
+        <!-- video -->
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h9A1.5 1.5 0 0 1 15 7.5v9A1.5 1.5 0 0 1 13.5 18h-9A1.5 1.5 0 0 1 3 16.5z" fill="#000"/><path d="M15 10.5l5-3.2c.4-.3 1-.0 1 .5v8.4c0 .5-.6.8-1 .5l-5-3.2z" fill="#000"/></svg>
+      </div>
+    </div>
+
+    <!-- MESSAGES (empty white) -->
+    <div class="messages"></div>
+
+    <!-- COMPOSE PREVIEW (Bitmoji + texte en cours d'écriture) -->
+    <div class="compose-preview">
+      <div class="bm">
+        <img src="bitmoji.jpg" alt="Bitmoji">
+      </div>
+      <div class="bubble-wrap">
+        <div class="type-bubble"><span class="txt" id="typedText">Coucou mon b&eacute;b&eacute; tu fais quoi&nbsp;?</span><span class="caret"></span></div>
+      </div>
+    </div>
+
+    <!-- BAS D'ECRAN (photo : barre + clavier + boutons) -->
+    <img class="kb-img" src="clavier.png" alt="clavier">
+
+  </div>
+
+  <script>
+    (function () {
+      var txt = document.getElementById('typedText');
+      var shifted = true; // majuscule au départ
+
+      function setText(v) {
+        txt.textContent = v;
+      }
+
+      // Cœur rouge style Apple (SVG, pas l'emoji système)
+      var APPLE_HEART =
+        '<svg class="heart" viewBox="0 0 24 24" width="22" height="22">' +
+        '<defs><linearGradient id="ah" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0" stop-color="#ff5b6a"/><stop offset="0.5" stop-color="#f5222f"/>' +
+        '<stop offset="1" stop-color="#d40f1e"/></linearGradient></defs>' +
+        '<path fill="url(#ah)" d="M12 21.3C6.4 17.3 3 13.6 3 9.9 3 7.2 5.1 5.2 7.6 5.2c1.7 0 3.3.9 4.4 2.4 1.1-1.5 2.7-2.4 4.4-2.4C18.9 5.2 21 7.2 21 9.9c0 3.7-3.4 7.4-9 11.4z"/>' +
+        '<ellipse cx="8.7" cy="9.2" rx="2" ry="1.3" fill="#ffffff" opacity="0.35" transform="rotate(-30 8.7 9.2)"/>' +
+        '</svg>';
+
+      // ===== Effet "écriture en direct" naturel (humain) =====
+      txt.textContent = "";
+
+      // délai humain : varie par caractère, plus long après espaces/ponctuation
+      function humanDelay(ch) {
+        var d = 150 + Math.random() * 170;          // base 150-320ms
+        if (ch === ' ') d += 120 + Math.random() * 180; // petite réflexion entre les mots
+        if (ch === '.' || ch === ',') d += 200;     // pause sur la ponctuation
+        if ("aeiou".indexOf(ch) === -1) d += 20;    // consonnes un peu plus lentes
+        return d;
+      }
+
+      function typeStr(str, cb) {
+        var i = 0;
+        (function step() {
+          if (i < str.length) {
+            var ch = str[i];
+            txt.textContent += ch;
+            i++;
+            setTimeout(step, humanDelay(ch));
+          } else { cb(); }
+        })();
+      }
+      function typeWordOn(baseLen, word, delayFn, cb) {
+        var i = 0;
+        (function step() {
+          if (i < word.length) {
+            txt.textContent += word[i]; i++;
+            setTimeout(step, delayFn());
+          } else { cb(); }
+        })();
+      }
+      function eraseTo(baseLen, cb) {
+        (function step() {
+          if (txt.textContent.length > baseLen) {
+            txt.textContent = txt.textContent.slice(0, -1);
+            setTimeout(step, 140 + Math.random() * 90);
+          } else { cb(); }
+        })();
+      }
+      function pause(ms, cb) { setTimeout(cb, ms); }
+      var wordDelay = function () { return 200 + Math.random() * 160; };
+
+      // ===== Démarre l'écriture 3 secondes après l'ouverture =====
+      setTimeout(function () {
+      // ===== 1 fois sur 2 : phrase d'amour (avec hésitation) OU l'aveu =====
+      if (Math.random() < 0.5) {
+        // --- Phrase A : hésitation sur "plus" ---
+        var base = "Je crois que je t'aime ";
+        var word = "plus";
+        typeStr(base, function () {
+          pause(500, function () {
+            typeWordOn(base.length, word, wordDelay, function () {         // "plus"
+              pause(1000, function () {
+                eraseTo(base.length, function () {                         // hésite
+                  pause(750, function () {
+                    typeWordOn(base.length, word, wordDelay, function () { // réécrit
+                      pause(1100, function () {
+                        eraseTo(base.length, function () {                 // hésite encore
+                          pause(700, function () {
+                            typeWordOn(base.length, word, wordDelay, function () {
+                              shifted = false;
+                            });
+                          });
+                        });
+                      });
+                    });
+                  });
+                });
+              });
+            });
+          });
+        });
+      } else {
+        // --- Phrase B : l'aveu, puis il efface tout et écrit "je t'aime ❤️" ---
+        typeStr("je t'ai trompé hier...", function () {
+          pause(1400, function () {
+            eraseTo(0, function () {                 // efface tout
+              pause(500, function () {
+                typeStr("je t'aime", function () {   // réécrit
+                  shifted = false;
+                });
+              });
+            });
+          });
+        });
+      }
+      }, 3000); // délai de 3 secondes avant de commencer à écrire
+
+      document.querySelectorAll('.key').forEach(function (k) {
+        k.addEventListener('click', function () {
+          // touche lettre simple
+          var letter = k.textContent.trim();
+          var isLetter = k.querySelector('svg') === null && letter.length === 1 && /[A-Za-z´]/.test(letter);
+
+          if (k.classList.contains('space')) {
+            setText(txt.textContent + ' ');
+          } else if (k.classList.contains('num')) {
+            // 123 : ignore ici
+          } else if (k.classList.contains('send')) {
+            // envoi : vide l'aperçu
+            setText('');
+          } else if (k.classList.contains('wide')) {
+            var svg = k.querySelector('svg');
+            if (svg && svg.querySelector('path[d^="M21 6"]')) {
+              // backspace
+              setText(txt.textContent.slice(0, -1));
+            } else {
+              // shift
+              shifted = !shifted;
+            }
+          } else if (isLetter) {
+            setText(txt.textContent + (shifted ? letter.toUpperCase() : letter.toLowerCase()));
+            shifted = false;
+          }
+        });
+      });
+
+      // suggestions cliquables
+      document.querySelectorAll('.predict .p').forEach(function (p) {
+        p.addEventListener('click', function () {
+          var cur = txt.textContent;
+          var sep = (cur && !cur.endsWith(' ')) ? ' ' : '';
+          setText(cur + sep + p.textContent + ' ');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
